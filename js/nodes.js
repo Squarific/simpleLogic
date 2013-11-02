@@ -48,7 +48,7 @@ SQUARIFIC.simpleLogic.nodes = {
 		outputs: 1,
 		defaultOutputs: [false],
 		update: function (node, inputs, time) {
-			node.outputs[0] = !(input[0] || input[1]);
+			node.outputs[0] = !(inputs[0] || inputs[1]);
 		},
 		getImage: function (node) {
 			if(!node.image) {
