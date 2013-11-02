@@ -116,12 +116,12 @@ SQUARIFIC.simpleLogic.nodes = {
 				node.ctx = ctx;
 			}
 			document.addEventListener("mouseup", function () {
-				node.outputs[0] = false;
-				node.pressed = false;
-				node.ctx.beginPath();
-				node.ctx.arc(25, 25, 15, 0, 2 * Math.PI);
-				node.ctx.fillStyle = "rgb(219, 43, 64)";
-				node.ctx.fill();
+				this.outputs[0] = false;
+				this.pressed = false;
+				this.ctx.beginPath();
+				this.ctx.arc(25, 25, 15, 0, 2 * Math.PI);
+				this.ctx.fillStyle = "rgb(219, 43, 64)";
+				this.ctx.fill();
 			}.bind(node));
 			return node.image;
 		},
