@@ -6,7 +6,7 @@ function loadMenu (target) {
 			var image = item.propertys.getImage(item);
 			image.className = "draw_node";
 			items[k].appendChild(image);
-			image.addEventListener("mousedown", function (target, event) {				
+			image.addEventListener("mousedown", function (target, event) {			
 				var x = event.clientX - Math.floor(target.overlayDiv.getBoundingClientRect().left) - (event.clientX - Math.floor(event.target.getBoundingClientRect().left)),
 				y = event.clientY - Math.floor(target.overlayDiv.getBoundingClientRect().top) - (event.clientY - Math.floor(event.target.getBoundingClientRect().top));
 				x = Math.round(x / 10) * 10;
@@ -14,14 +14,9 @@ function loadMenu (target) {
 				
 				var node = target.addNode(this, x, y);
 				
-				var div = document.createElement("div");
-				div.id = node.id;
-				image = div.appendChild(node.propertys.getImage(node));
-				target.overlayDiv.appendChild(div);
-				image.node = node;
-				image.className = "draw_node";
-				image.id = node.id + "_image";
+				target.overlayDiv.appendChild(target.domElementOfNode(node));
 				
+				var image = document.getElementById(node.id + "_image");
 				target.draggingNode = image;
 				image.draggingStartX = event.clientX - Math.floor(event.target.getBoundingClientRect().left);
 				image.draggingStartY = event.clientY - Math.floor(event.target.getBoundingClientRect().top);

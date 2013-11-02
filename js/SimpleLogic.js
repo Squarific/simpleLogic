@@ -81,24 +81,49 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 		for (var k = 0; k < nodes.length; k++) {
 			var div = document.getElementById(nodes[k].id);
 			if (!div) {
-				var div = document.createElement("div");
-				div.id = nodes[k].id;
-				div.className = "nodeContainer";
-				
-				for (var i = 0; i < nodes[k].propertys.inputs; i++) {
-					var input = 0;
-				}
-				
-				image = div.appendChild(nodes[k].propertys.getImage(nodes[k]));
-				image.node = nodes[k];
-				image.className = "draw_node position_node";
-				image.id = nodes[k].id + "_image";
-				overlayDiv.appendChild(div);
+				overlayDiv.appendChild(this.domElementOfNode(nodes[k]));
 			}
 			div.style.position = "absolute";
 			div.style.left = nodes[k].x + "px";
 			div.style.top = nodes[k].y + "px";
 		}
+	};
+	
+	this.domElementOfNode = function (node) {
+		var div = document.createElement("div");
+		div.id = node.id;
+		div.className = "nodeContainer";
+		
+		image = div.appendChild(node.propertys.getImage(node));
+		image.node = node;
+		image.className = "draw_node position_node";
+		image.id = node.id + "_image";
+		
+		var height = (image.height - node.propertys.inputs * 10) / (node.propertys.inputs + 1);
+		for (var i = 0; i < node.propertys.inputs; i++) {
+			var input = document.createElement("div");
+			input.className = "draw_connect_div";
+			input.style.position = "absolute";
+			input.style.height = "10px";
+			input.style.width = "5px";
+			input.style.left = "-5px";
+			input.style.top = height * (i + 1) + i * 10 + "px";
+			div.appendChild(input);
+		}
+		
+		var height = (image.height - node.propertys.outputs * 10) / (node.propertys.outputs + 1);
+		for (var i = 0; i < node.propertys.outputs; i++) {
+			var input = document.createElement("div");
+			input.className = "draw_connect_div";
+			input.style.position = "absolute";
+			input.style.height = "10px";
+			input.style.width = "5px";
+			input.style.left = image.width + 2 + "px";
+			input.style.top = height * (i + 1) + i * 10 + "px";
+			div.appendChild(input);
+		}
+		
+		return div;
 	};
 	
 	this.tick = function () {
@@ -237,8 +262,8 @@ SQUARIFIC.simpleLogic.nodes = {
 			}.bind(node));
 			return node.image;
 		},
-		mousemove: function (event, node) {
-			if (node.pressed) {
+		mousemove: function (event, nodeDiv) {
+			if (nodeDiv.node.pressed) {
 				return true;
 			}
 			return false;

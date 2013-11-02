@@ -24,6 +24,9 @@ body {
 	left:0;
 	top:0;
 }
+.draw_connect_div {
+	background:gray;
+}
 .draw_node {
 	border:1px solid rgb(235, 175, 19);
 	box-shadow: 1px 1px 10px #614A21;
