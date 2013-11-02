@@ -1,0 +1,35 @@
+<html>
+	<head>
+		<title>SimpleLogic Logic Gates</title>
+
+		<link rel="stylesheet" href="css/style.css">
+		<link href='http://fonts.googleapis.com/css?family=Coda+Caption:800' rel='stylesheet' type='text/css'>
+
+		<script src="js/menu.js"></script>
+		<script src="js/utils.js"></script>
+		<script src="js/SimpleLogic.js"></script>
+		<script>
+			function onload () {
+				var canvas = document.getElementById("drawCanvas");
+				canvas.width = parseInt(window.innerWidth * .8);
+				canvas.height = window.innerHeight;
+				simpleLogic = new SQUARIFIC.simpleLogic.SimpleLogic(canvas, document.getElementById("overlay"));
+				setTimeout(function () {loadMenu(simpleLogic)}, 300);
+			}
+			window.addEventListener("load", onload);
+		</script>
+	</head>
+	<body>
+		<div class="menu">
+			<div class="section">INPUTS</div>
+				<div id="BUTTON" class="node"></div>
+			<div class="section">LOGIC PORTS</div>
+				<div id="OR" class="node"></div>
+				<div id="AND" class="node"></div>
+				<div id="NOT" class="node"></div>
+			<div class="section">OUTPUTS</div>
+		</div>
+		<canvas id="drawCanvas" class="drawZone"></canvas>
+		<div id="overlay" class="drawZone"></div>
+	</body>
+</html>

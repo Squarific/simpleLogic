@@ -1,0 +1,4 @@
+Draw input/output
+Connect nodes
+Draw lines
+Add more input, output and ports

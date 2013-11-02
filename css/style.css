@@ -1,0 +1,49 @@
+body {
+	position:relative;
+	margin:0;
+	padding:0;
+	width:100%;
+	height:100%;
+	background:rgb(94, 92, 92);
+	font-family: 'Coda Caption', sans-serif;
+}
+.menu {
+	position:absolute;
+	left:0;
+	top:0;
+	width:20%;
+	background:rgb(243, 243, 243);
+	height:100%;
+	overflow-y:auto;
+}
+.nodeContainer {
+	position:relative;
+}
+.position_node {
+	position:absolute;
+	left:0;
+	top:0;
+}
+.draw_node {
+	border:1px solid rgb(235, 175, 19);
+	box-shadow: 1px 1px 10px #614A21;
+}
+.node {
+	margin:5px;
+	display:inline-block;
+}
+.section {
+	background:rgb(199, 161, 0);
+	padding:5px;
+	text-align:center;
+	font-size:18px;
+	font-weight:800;
+	color:white;
+}
+.drawZone {
+	position:absolute;
+	left:20%;
+	top:0;
+	width:80%;
+	height:100%;
+}
