@@ -15,6 +15,20 @@ SQUARIFIC.simpleLogic.nodes = {
 			return node.image;
 		}
 	},
+	NAND: {
+		inputs: 2,
+		outputs: 1,
+		defaultOutputs: [false],
+		update: function (node, inputs, time) {
+			node.outputs[0] = !(inputs[0] && inputs[1]);
+		},
+		getImage: function (node) {
+			if(!node.image) {
+				node.image = SQUARIFIC.simpleLogic.port.getImage("NAND");
+			}
+			return node.image;
+		}
+	},
 	OR: {
 		inputs: 2,
 		outputs: 1,
@@ -25,6 +39,34 @@ SQUARIFIC.simpleLogic.nodes = {
 		getImage: function (node) {
 			if (!node.image) {
 				node.image = SQUARIFIC.simpleLogic.port.getImage("OR");
+			}
+			return node.image;
+		}
+	},
+	NOR: {
+		inputs: 2,
+		outputs: 1,
+		defaultOutputs: [false],
+		update: function (node, inputs, time) {
+			node.outputs[0] = !(input[0] || input[1]);
+		},
+		getImage: function (node) {
+			if(!node.image) {
+				node.image = SQUARIFIC.simpleLogic.port.getImage("NOR");
+			}
+			return node.image;
+		}
+	},
+	XOR: {
+		input: 2,
+		outputs: 1,
+		defaultOutputs: [false],
+		update: function (node, inputs, time) {
+			node.outputs[0] = inputs[0] ? !inputs[1] : inputs[0];
+		},
+		getImage: function (node) {
+			if(!node.image) {
+				node.image = SQUARIFIC.simpleLogic.port.getImage("XOR");
 			}
 			return node.image;
 		}
