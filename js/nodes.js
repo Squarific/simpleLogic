@@ -58,15 +58,29 @@ SQUARIFIC.simpleLogic.nodes = {
 		}
 	},
 	XOR: {
-		input: 2,
+		inputs: 2,
 		outputs: 1,
 		defaultOutputs: [false],
 		update: function (node, inputs, time) {
-			node.outputs[0] = inputs[0] ? !inputs[1] : inputs[0];
+			node.outputs[0] = inputs[0] ? !inputs[1] : inputs[1];
 		},
 		getImage: function (node) {
 			if(!node.image) {
 				node.image = SQUARIFIC.simpleLogic.port.getImage("XOR");
+			}
+			return node.image;
+		}
+	},
+	XNOR: {
+		inputs: 2,
+		outputs: 1,
+		defaultOutputs: [false],
+		update: function (node, inputs, time) {
+			node.outputs[0] = inputs[0] ? inputs[1] : !inputs[1];
+		},
+		getImage: function (node) {
+			if(!node.image) {
+				node.image = SQUARIFIC.simpleLogic.port.getImage("XNOR");
 			}
 			return node.image;
 		}
