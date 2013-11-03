@@ -1,4 +1,2 @@
-Remove connections
-Add lever, pulser
-Add digit display, RGB light
+Add pulser
 Share creations

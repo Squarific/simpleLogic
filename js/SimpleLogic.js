@@ -8,6 +8,8 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 	this.nodes = nodes;
 	var canvasCtx = canvas.getContext("2d");
 	this.overlayDiv = overlayDiv;
+	var settings = {};
+	settings.connectionWidth = 8;
 	
 	this.eventHandlers = {};
 	
@@ -58,9 +60,15 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 		this.mouseY = event.clientY - Math.floor(overlayDiv.getBoundingClientRect().top);
 	}.bind(this);
 	
+	this.eventHandlers.resize = function resize (event) {
+		canvas.width = parseInt(window.innerWidth * .8);
+		canvas.height = window.innerHeight;
+	};
+	
 	overlayDiv.addEventListener("mousedown", this.eventHandlers.mousedown);
 	document.addEventListener("mouseup", this.eventHandlers.mouseup);
 	document.addEventListener("mousemove", this.eventHandlers.mousemove);
+	window.addEventListener("resize", this.eventHandlers.resize);
 
 	this.update = function () {
 		var updateTime = Date.now();
@@ -115,6 +123,7 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 
 	this.draw = function () {
 		canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+		canvasCtx.lineWidth = "5";
 		for (var k = 0; k < nodes.length; k++) {
 			var div = document.getElementById(nodes[k].id);
 			if (!div) {
@@ -168,13 +177,13 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 			input.className = "draw_connect_div";
 			input.style.position = "absolute";
 			input.style.height = "10px";
-			input.style.width = "5px";
-			input.style.left = "-5px";
+			input.style.width = settings.connectionWidth + "px";
+			input.style.left = -settings.connectionWidth + "px";
 			input.style.top = height * (i + 1) + i * 10 + "px";
 			input.node = node;
 			input.connectingInput = i;
 			input.addEventListener("click", function (number, event) {
-				this.removeConnectionFromInput(event.target.node, number);
+				event.target.node.removeInput(number);
 			}.bind(this, i));
 			div.appendChild(input);
 		}
@@ -185,18 +194,24 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 			input.className = "draw_connect_div";
 			input.style.position = "absolute";
 			input.style.height = "10px";
-			input.style.width = "5px";
+			input.style.width = settings.connectionWidth + "px";
 			input.style.left = image.width + 2 + "px";
 			input.style.top = height * (i + 1) + i * 10 + "px";
 			input.node = node;
 			input.connectingOutput = i;
 			input.addEventListener("click", function (number, event) {
-				this.removeConnectionFromOutput(event.target.node, number);
+				this.removeConnectionsFromOutput(event.target.node, number);
 			}.bind(this, i));
 			div.appendChild(input);
 		}
 		
 		return div;
+	};
+	
+	this.removeConnectionsFromOutput = function removeConnections (node, number) {
+		for (var k = 0; k < nodes.length; k++) {
+			nodes[k].removeInput(node, number);
+		}
 	};
 	
 	this.tick = function () {
@@ -257,15 +272,15 @@ SQUARIFIC.simpleLogic.Node = function Node (settings) {
 		};
 	};
 	
-	this.removeInput = function (node, inputNumber) {
-		if (typeof inputNumber !== "number") {
+	this.removeInput = function (node, outputNumber) {
+		if (typeof node !== "number") {
 			for (var k = 0; k < this.inputNodes.length; k++) {
-				if (this.inputNodes[k].node == node) {
+				if (this.inputNodes[k] && this.inputNodes[k].node == node && (typeof outputNumber !== "number" || this.inputNodes[k].number === outputNumber)) {
 					delete this.inputNodes[k];
 				}
 			}
 		} else {
-			delete this.inputNodes[inputNumber];
+			delete this.inputNodes[node];
 		}
 	};
 };
@@ -280,7 +295,7 @@ SQUARIFIC.simpleLogic.node.getBackground = function (width, height, border) {
 };
 
 SQUARIFIC.simpleLogic.port.getImage = function (text) {
-	var width = 15 * text.length + 20,
+	var width = 12 * text.length + 32,
 		height = 50;
 	var border = 5;
 	var ctx = SQUARIFIC.simpleLogic.node.getBackground(width, height, border);
