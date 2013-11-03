@@ -1,3 +1,4 @@
-Connect nodes
-Draw lines
-Add more input, output and ports
+Remove connections
+Add lever, pulser
+Add digit display, RGB light
+Share creations

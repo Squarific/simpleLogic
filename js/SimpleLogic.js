@@ -5,6 +5,7 @@ SQUARIFIC.simpleLogic.node = SQUARIFIC.simpleLogic.node || {};
 
 SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 	var nodes = [];
+	this.nodes = nodes;
 	var canvasCtx = canvas.getContext("2d");
 	this.overlayDiv = overlayDiv;
 	
@@ -124,7 +125,7 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 			div.style.top = nodes[k].y + "px";
 			
 			for (var i = 0; i < nodes[k].inputs.length; i++) {
-				if (nodes[k].inputs[i].node) {
+				if (nodes[k].inputs[i]) {
 					var inputCoords = this.inputCoords(nodes[k], i);
 					var outputCoords = this.outputCoords(nodes[k].inputs[i].node, nodes[k].inputs[i].number);
 					canvasCtx.beginPath();
@@ -208,8 +209,6 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 };
 
 SQUARIFIC.simpleLogic.Node = function Node (settings) {
-	var inputNodes = [];
-	this.inputs = inputNodes;
 	settings = settings || {};
 	if (!SQUARIFIC.simpleLogic.nodes[settings.type]) {
 		throw "Unknown node type";
@@ -218,9 +217,11 @@ SQUARIFIC.simpleLogic.Node = function Node (settings) {
 	this.propertys = SQUARIFIC.simpleLogic.nodes[settings.type];
 	this.propertys.type = settings.type;
 	
-	this.outputs = this.propertys.defaultOutputs || [];
-	for (var k = 0; k < this.propertys.outputs; k++) {
-		this.outputs[k] = false;
+	this.inputNodes = [];
+	this.inputs = this.inputNodes;
+	this.outputs = [];
+	for (var k = 0; k < this.propertys.defaultOutputs; k++) {
+		this.outputs[k] = this.propertys.defaultOutputs[k];
 	}
 	
 	this.lastUpdated = Date.now();
@@ -231,11 +232,11 @@ SQUARIFIC.simpleLogic.Node = function Node (settings) {
 	this.getInputs = function getInputs (time) {
 		var inputs = [];
 		for (var k = 0; k < this.propertys.inputs; k++) {
-			if (inputNodes[k]) {
-				if (inputNodes[k].lastUpdate < time) {
-					inputNodes[k].update(time);
+			if (this.inputNodes[k]) {
+				if (this.inputNodes[k].lastUpdate < time) {
+					this.inputNodes[k].update(time);
 				}
-				inputs[k] = inputNodes[k].node.outputs[inputNodes[k].number];
+				inputs[k] = this.inputNodes[k].node.outputs[this.inputNodes[k].number];
 			} else {
 				inputs[k] = false;
 			}
@@ -250,7 +251,7 @@ SQUARIFIC.simpleLogic.Node = function Node (settings) {
 	};
 	
 	this.addInput = function (node, nodeOutputNumber, inputNodeNumber) {
-		inputNodes[inputNodeNumber] = {
+		this.inputNodes[inputNodeNumber] = {
 			node: node,
 			number: nodeOutputNumber
 		};
@@ -258,13 +259,13 @@ SQUARIFIC.simpleLogic.Node = function Node (settings) {
 	
 	this.removeInput = function (node, inputNumber) {
 		if (typeof inputNumber !== "number") {
-			for (var k = 0; k < inputNodes.length; k++) {
-				if (inputNodes[k] == node) {
-					delete inputNodes[k];
+			for (var k = 0; k < this.inputNodes.length; k++) {
+				if (this.inputNodes[k] == node) {
+					delete this.inputNodes[k];
 				}
 			}
 		} else {
-			delete inputNodes[inputNumber];
+			delete this.inputNodes[inputNumber];
 		}
 	};
 };
