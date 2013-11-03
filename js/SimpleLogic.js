@@ -260,7 +260,7 @@ SQUARIFIC.simpleLogic.Node = function Node (settings) {
 	this.removeInput = function (node, inputNumber) {
 		if (typeof inputNumber !== "number") {
 			for (var k = 0; k < this.inputNodes.length; k++) {
-				if (this.inputNodes[k] == node) {
+				if (this.inputNodes[k].node == node) {
 					delete this.inputNodes[k];
 				}
 			}
