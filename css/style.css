@@ -8,13 +8,15 @@ body {
 	font-family: 'Coda Caption', sans-serif;
 }
 .menu {
-	position:absolute;
+	position:fixed;
 	left:0;
 	top:0;
 	width:20%;
 	background:rgb(243, 243, 243);
 	height:100%;
 	overflow-y:auto;
+	overflow-x:hidden;
+	word-wrap:break-word;
 }
 .nodeContainer {
 	position:relative;
@@ -26,6 +28,7 @@ body {
 }
 .draw_connect_div {
 	background:gray;
+	cursor:pointer;
 }
 .draw_node {
 	border:1px solid rgb(235, 175, 19);
@@ -47,6 +50,4 @@ body {
 	position:absolute;
 	left:20%;
 	top:0;
-	width:80%;
-	height:100%;
 }

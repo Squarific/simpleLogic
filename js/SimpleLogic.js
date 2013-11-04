@@ -11,6 +11,9 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 	var settings = {};
 	settings.connectionWidth = 8;
 	
+	this.canvasWidth = 0;
+	this.canvasHeight = 0;
+	
 	this.eventHandlers = {};
 	
 	this.eventHandlers.mousedown = function mousedown (event) {
@@ -122,7 +125,8 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 	};
 
 	this.draw = function () {
-		canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+		canvas.width = this.canvasWidth;
+		canvas.height = this.canvasHeight;
 		canvasCtx.lineWidth = "5";
 		for (var k = 0; k < nodes.length; k++) {
 			var div = document.getElementById(nodes[k].id);
@@ -140,6 +144,8 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 					canvasCtx.beginPath();
 					canvasCtx.moveTo(inputCoords[0], inputCoords[1]);
 					canvasCtx.lineTo(outputCoords[0], outputCoords[1]);
+					this.canvasWidth = Math.max(this.canvasWidth, Math.max(inputCoords[0], outputCoords[0]));
+					this.canvasHeight = Math.max(this.canvasHeight, Math.max(inputCoords[1], outputCoords[1]));
 					canvasCtx.strokeStyle = (nodes[k].inputs[i].node.outputs[nodes[k].inputs[i].number]) ? "rgb(55, 173, 50)" : "rgb(75, 37, 37)";
 					canvasCtx.stroke();
 				}
@@ -155,6 +161,8 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 			}
 			canvasCtx.moveTo(coords[0], coords[1]);
 			canvasCtx.lineTo(this.mouseX, this.mouseY);
+			this.canvasWidth = Math.max(this.canvasWidth, Math.max(coords[0], this.mouseX));
+			this.canvasHeight = Math.max(this.canvasHeight, Math.max(coords[1], this.mouseY));
 			canvasCtx.lineWidth = "5";
 			canvasCtx.strokeStyle = "rgb(44, 156, 143)";
 			canvasCtx.stroke();
@@ -212,6 +220,64 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 		for (var k = 0; k < nodes.length; k++) {
 			nodes[k].removeInput(node, number);
 		}
+	};
+	
+	this.nodeFromId = function (id) {
+		for (var k = 0; k < nodes.length; k++) {
+			if (nodes[k].id === id) {
+				return nodes[k];
+			}
+		}
+		console.log("Node '" + id + "' not found.");
+		return {};
+	};
+	
+	this.loadFromJSON = function loadFromJSON (json, x, y) {
+		var jsonnodes = JSON.parse(json);
+		var time = Date.now();
+		var iNodes = [];
+		for (var k = 0; k < jsonnodes.length; k++) {
+			var node = new SQUARIFIC.simpleLogic.Node({type: jsonnodes[k].type});
+			node.outputs = jsonnodes[k].outputs;
+			node.x = jsonnodes[k].x + x;
+			node.y = jsonnodes[k].y + y;
+			node.id = jsonnodes[k].id + "_JSONADD_" + time;
+			node.inputs = jsonnodes[k].inputs;
+			nodes.push(node);
+			iNodes.push(node);
+		}
+		for (var k = 0; k < iNodes.length; k++) {
+			for (var i = 0; i < iNodes[k].inputs.length; i++) {
+				iNodes[k].inputs[i].node = this.nodeFromId(iNodes[k].inputs[i].node);
+			}
+		}
+	};
+	
+	this.toJSONString = function toJSONString () {
+		var jsonNodes = [];
+		var time = Date.now();
+		for (var k = 0; k < nodes.length; k++) {
+			jsonNodes.push(this.nodeToJSONCompatible(nodes[k], time));
+		}
+		return JSON.stringify(jsonNodes);
+	};
+	
+	this.nodeToJSONCompatible = function nodeToJSONCompatible (node, time) {
+		var jsonNode = {
+			type: node.propertys.type,
+			id: node.id + "_JSON_" + time,
+			x: node.x,
+			y: node.y,
+			outputs: node.outputs,
+			inputs: []
+		};
+		for (var k = 0; k < node.inputs.length; k++) {
+			jsonNode.inputs[k] = {
+				node: node.inputs[k].node.id + "_JSON_" + time,
+				number: node.inputs[k].number
+			};
+		}
+		return jsonNode;
 	};
 	
 	this.tick = function () {
