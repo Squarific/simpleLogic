@@ -63,15 +63,9 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 		this.mouseY = event.clientY - Math.floor(overlayDiv.getBoundingClientRect().top);
 	}.bind(this);
 	
-	this.eventHandlers.resize = function resize (event) {
-		canvas.width = parseInt(window.innerWidth * .8);
-		canvas.height = window.innerHeight;
-	};
-	
 	overlayDiv.addEventListener("mousedown", this.eventHandlers.mousedown);
 	document.addEventListener("mouseup", this.eventHandlers.mouseup);
 	document.addEventListener("mousemove", this.eventHandlers.mousemove);
-	window.addEventListener("resize", this.eventHandlers.resize);
 
 	this.update = function () {
 		var updateTime = Date.now();
@@ -239,16 +233,19 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 		for (var k = 0; k < jsonnodes.length; k++) {
 			var node = new SQUARIFIC.simpleLogic.Node({type: jsonnodes[k].type});
 			node.outputs = jsonnodes[k].outputs;
-			node.x = jsonnodes[k].x + x;
-			node.y = jsonnodes[k].y + y;
+			node.x = Math.max(0, jsonnodes[k].x + x);
+			node.y = Math.max(0, jsonnodes[k].y + y);
 			node.id = jsonnodes[k].id + "_JSONADD_" + time;
 			node.inputs = jsonnodes[k].inputs;
+			node.inputNodes = node.inputs;
 			nodes.push(node);
 			iNodes.push(node);
 		}
 		for (var k = 0; k < iNodes.length; k++) {
 			for (var i = 0; i < iNodes[k].inputs.length; i++) {
-				iNodes[k].inputs[i].node = this.nodeFromId(iNodes[k].inputs[i].node);
+				if (iNodes[k].inputs[i]) {
+					iNodes[k].inputs[i].node = this.nodeFromId(iNodes[k].inputs[i].node + "_JSONADD_" + time);
+				}
 			}
 		}
 	};
@@ -272,13 +269,31 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 			inputs: []
 		};
 		for (var k = 0; k < node.inputs.length; k++) {
-			jsonNode.inputs[k] = {
-				node: node.inputs[k].node.id + "_JSON_" + time,
-				number: node.inputs[k].number
-			};
+			if (node.inputs[k]) {
+				jsonNode.inputs[k] = {
+					node: node.inputs[k].node.id + "_JSON_" + time,
+					number: node.inputs[k].number
+				};
+			}
 		}
 		return jsonNode;
 	};
+	
+	this.addModule = function (json) {
+		setTimeout(function () {document.addEventListener("click", this.addModuleClickListener)}.bind(this), 4);
+		document.addingModule = json;
+		document.addingModuleTime = Date.now();
+		document.getElementById("clickHelp").style.display = "block";
+	};
+	
+	this.addModuleClickListener = function clicklistener (event) {
+		if (Date.now() - document.addingModuleTime < 5) {
+			return;
+		}
+		this.loadFromJSON(document.addingModule, event.clientX - Math.floor(overlayDiv.getBoundingClientRect().left), event.clientY - Math.floor(overlayDiv.getBoundingClientRect().top));
+		document.addingModule = "[]";
+		document.getElementById("clickHelp").style.display = "none";
+	}.bind(this);
 	
 	this.tick = function () {
 		this.update();
@@ -298,7 +313,7 @@ SQUARIFIC.simpleLogic.Node = function Node (settings) {
 	this.propertys = SQUARIFIC.simpleLogic.nodes[settings.type];
 	this.propertys.type = settings.type;
 	
-	this.inputNodes = [];
+	this.inputNodes = {length: this.propertys.inputs};
 	this.inputs = this.inputNodes;
 	this.outputs = [];
 	for (var k = 0; k < this.propertys.defaultOutputs; k++) {

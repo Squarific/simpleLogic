@@ -6,14 +6,81 @@ body {
 	height:100%;
 	background:rgb(94, 92, 92);
 	font-family: 'Coda Caption', sans-serif;
+	color:white;
+}
+#clickHelp {
+	display:none;
+}
+.module {
+	background:rgb(124, 123, 82);
+	padding:5px;
+	cursor:pointer;
+	margin-top:5px;
+}
+.module:hover {
+	background:rgb(73, 72, 38);
+}
+.modules_reload_button {
+	margin:10px;
+	padding:4px;
+	font-size:18px;
+	color:white;
+	text-align:center;
+	background:rgb(124, 123, 82);
+	cursor:pointer;
+}
+.modules_reload_button:hover {
+	background:rgb(109, 108, 74);
+}
+#modules_list {
+	margin:25px;
+	color:white;
+}
+.uploadzone {
+	margin:50px;
+}
+.label {
+	color:white;
+}
+.modules {
+	position:fixed;
+	display:none;
+	left:20px;
+	right:20px;
+	top:20px;
+	bottom:20px;
+	overflow:auto;
+	background:rgb(82, 70, 34);
+	border:5px solid rgb(48, 36, 7);
+}
+.menusection {
+	margin-top:4px;
+}
+.topBar {
+	background:rgb(165, 163, 109);
+	height:50px;
+	text-align:center;
+}
+.topBarButton {
+	display:inline-block;
+	padding:8px;
+	height:34px;
+	font-size:22px;
+	color:white;
+	margin-left:20px;
+	background:rgb(97, 88, 44);
+	cursor:pointer;
+}
+.topBarButton:hover {
+	background:rgb(66, 60, 29);
 }
 .menu {
 	position:fixed;
 	left:0;
-	top:0;
+	top:50px;
 	width:20%;
 	background:rgb(243, 243, 243);
-	height:100%;
+	height:calc(100% - 50px);
 	overflow-y:auto;
 	overflow-x:hidden;
 	word-wrap:break-word;
@@ -49,5 +116,5 @@ body {
 .drawZone {
 	position:absolute;
 	left:20%;
-	top:0;
+	top:50px;
 }

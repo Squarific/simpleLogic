@@ -129,6 +129,15 @@ SQUARIFIC.simpleLogic.nodes = {
 				node.image = ctx.canvas;
 				node.ctx = ctx;
 			}
+			node.image.addEventListener("mousemove", function (event) {
+				var relX = event.clientX - Math.floor(event.target.getBoundingClientRect().left),
+				relY = event.clientY - Math.floor(event.target.getBoundingClientRect().top);
+				if ((relX - 25) * (relX - 25) + (relY - 25) * (relY - 25) < 225) {
+					event.target.style.cursor = "pointer";
+				} else {
+					event.target.style.cursor = "auto";
+				}
+			});
 			document.addEventListener("mouseup", function () {
 				this.outputs[0] = false;
 				this.pressed = false;
@@ -162,6 +171,9 @@ SQUARIFIC.simpleLogic.nodes = {
 		inputs: 1,
 		outputs: 0,
 		update: function (node, inputs, time) {
+			if (!node.ctx) {
+				node.propertys.getImage(node);
+			}
 			if (node.lastInput !== inputs[0]) {
 				if (inputs[0]) {
 					node.ctx.beginPath();
@@ -195,6 +207,9 @@ SQUARIFIC.simpleLogic.nodes = {
 		outputs: 0,
 		update: function (node, inputs, time) {
 			node.lastInputs = node.lastInputs || [];
+			if (!node.ctx) {
+				node.propertys.getImage(node);
+			}
 			if (node.lastInputs[0] !== inputs[0] || node.lastInputs[1] !== inputs[1] || node.lastInputs[2] !== inputs[2]) {
 				node.ctx.beginPath();
 				node.ctx.arc(25, 25, 14, 0, 2 * Math.PI);
@@ -220,6 +235,9 @@ SQUARIFIC.simpleLogic.nodes = {
 		inputs: 3,
 		outputs: 0,
 		update: function (node, inputs, time) {
+			if (!node.ctx) {
+				node.propertys.getImage(node);
+			}
 			node.lastInputs = node.lastInputs || [];
 			if (node.lastInputs[0] !== inputs[0] || node.lastInputs[1] !== inputs[1] || node.lastInputs[2] !== inputs[2]) {
 				node.ctx.beginPath();
@@ -247,6 +265,9 @@ SQUARIFIC.simpleLogic.nodes = {
 		outputs: 0,
 		update: function (node, inputs, time) {
 			node.lastInputs = node.lastInputs || [];
+			if (!node.ctx) {
+				node.propertys.getImage(node);
+			}
 			if (node.lastInputs[0] !== inputs[0] || node.lastInputs[1] !== inputs[1] || node.lastInputs[2] !== inputs[2] || node.lastInputs[3] !== inputs[3]) {
 				var number = "";
 				for (var k = 0; k < inputs.length; k++) {
@@ -296,6 +317,7 @@ SQUARIFIC.simpleLogic.nodes = {
 					ctx.fill();
 				}.bind(node));
 				node.ctx = ctx;
+				node.image.style.cursor = "pointer";
 			}
 			return node.image;
 		}

@@ -5,30 +5,42 @@
 		<link rel="stylesheet" href="css/style.css">
 		<link href='http://fonts.googleapis.com/css?family=Coda+Caption:800' rel='stylesheet' type='text/css'>
 
+		<script src="js/modules.js"></script>
 		<script src="js/menu.js"></script>
 		<script src="js/utils.js"></script>
 		<script src="js/nodes.js"></script>
 		<script src="js/SimpleLogic.js"></script>
 		<script>
 			function onload () {
-				var canvas = document.getElementById("drawCanvas");
-				canvas.width = parseInt(window.innerWidth * .8);
-				canvas.height = window.innerHeight;
-				simpleLogic = new SQUARIFIC.simpleLogic.SimpleLogic(canvas, document.getElementById("overlay"));
+				simpleLogic = new SQUARIFIC.simpleLogic.SimpleLogic(document.getElementById("drawCanvas"), document.getElementById("overlay"));
 				setTimeout(function () {loadMenu(simpleLogic)}, 300);
+				reloadmodules();
 			}
 			window.addEventListener("load", onload);
 		</script>
 	</head>
 	<body>
+		<div class="topBar">
+			<div class="topBarButton" onclick="document.getElementById('modules').style.display = 'block';">
+				Modules
+			</div>
+			<div id="clickHelp">
+				Click where you want to add the module
+			</div>
+		</div>
 		<div class="menu">
-			<div class="section">INPUTS</div>
+			<div class="menusection">
+				<div class="section">INPUTS</div>
 				<div id="BUTTON" class="node"></div>
 				<div id="LEVER" class="node"></div>
 				<div id="PULSER" class="node"></div>
-			<div class="section">SPECIAL</div>
+			</div>
+			<div class="menusection">
+				<div class="section">SPECIAL</div>
 				<div id="REPEATER" class="node"></div>
-			<div class="section">LOGIC PORTS</div>
+			</div>
+			<div class="menusection">
+				<div class="section">LOGIC PORTS</div>
 				<div id="OR" class="node"></div>
 				<div id="NOR" class="node"></div>
 				<div id="XOR" class="node"></div>
@@ -36,18 +48,39 @@
 				<div id="AND" class="node"></div>
 				<div id="NAND" class="node"></div>
 				<div id="NOT" class="node"></div>
-			<div class="section">OUTPUTS</div>
+			</div>
+			<div class="menusection">
+				<div class="section">OUTPUTS</div>
 				<div id="LIGHT" class="node"></div>
 				<div id="RGBLIGHT" class="node"></div>
 				<div id="SQUARERGBLIGHT" class="node"></div>
 				<div id="DIGITDISPLAY" class="node"></div>
-			<div class="section">Donate</div>
-			If you want to throw bitcoins to me feel free<br/>
-			1GTq2EtKs6qKQWQXD2S8UHfpgvptSXoNo7
+			</div>
+			<div class="menusection" style="color:black;">
+				<div class="section">Donate</div>
+				If you want to throw bitcoins to me feel free<br/>
+				1GTq2EtKs6qKQWQXD2S8UHfpgvptSXoNo7
+			</div>
 		</div>
 		<div class="drawContainer">
 			<canvas id="drawCanvas" class="drawZone"></canvas>
 			<div id="overlay" class="drawZone"></div>
+		</div>
+		<div id="modules" class="modules">
+			<div class="modules_reload_button" onclick="this.parentNode.style.display = 'none';">Close</div>
+			<div class="modules_reload_button" onclick="document.getElementById('upload').style.display = 'block';">Upload current</div>
+			<div class="modules_reload_button" onclick="reloadmodules()">Refresh</div>
+			<div id="modules_list"></div>
+		</div>
+		<div id="upload" class="modules">
+			<div class="modules_reload_button" onclick="this.parentNode.style.display = 'none';">Close</div>
+			<div class="uploadzone">
+				<div id="upload_error" class="error"><div>
+				<div class="label">Username</div><input id="module_username" type="text">
+				<div class="label">Name</div><input id="module_name" type="text">
+				<div class="label">Description</div><textarea id="module_description" rows="10" cols="100"></textarea>
+			</div>
+			<div class="modules_reload_button" onclick="uploadmodule()">Upload</div>
 		</div>
 	</body>
 </html>
