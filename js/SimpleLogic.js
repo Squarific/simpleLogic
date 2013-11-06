@@ -10,6 +10,11 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 	this.overlayDiv = overlayDiv;
 	var settings = {};
 	settings.connectionWidth = 8;
+	settings.connectionHeight = 10;
+	if ('ontouchstart' in window || 'onmsgesturechange' in window) {
+		settings.connectionWidth = 20;
+		settings.connectionHeight = 20;
+	}
 	
 	this.canvasWidth = 0;
 	this.canvasHeight = 0;
@@ -50,6 +55,7 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 	}.bind(this);
 	
 	this.eventHandlers.mousemove = function mousemove (event) {
+		var returntrue;
 		if (this.draggingNode && (typeof this.draggingNode.node.propertys.mousemove !== "function" || !this.draggingNode.node.propertys.mousemove(event, this.draggingNode))) {
 			var x = event.clientX - Math.floor(overlayDiv.getBoundingClientRect().left) - this.draggingNode.draggingStartX,
 				y = event.clientY - Math.floor(overlayDiv.getBoundingClientRect().top) - this.draggingNode.draggingStartY;
@@ -58,14 +64,46 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 			this.draggingNode.node.x = x;
 			this.draggingNode.node.y = y;
 			event.preventDefault();
+			returntrue = true;
+		}
+		if (this.connecting) {
+			returntrue = true;
 		}
 		this.mouseX = event.clientX - Math.floor(overlayDiv.getBoundingClientRect().left);
 		this.mouseY = event.clientY - Math.floor(overlayDiv.getBoundingClientRect().top);
+		return returntrue;
 	}.bind(this);
+	
+	this.eventHandlers.touchstart = function touchstart (event) {
+		var ev = event.changedTouches[0];
+		ev.preventDefault = function () {};
+		this.eventHandlers.mousedown(ev);
+	}.bind(this);
+	
+	this.eventHandlers.touchend = function touchend (event) {
+		var ev = {
+			clientX: event.changedTouches[0].clientX,
+			clientY: event.changedTouches[0].clientY
+		};
+		ev.preventDefault = function () {};
+		ev.target = document.elementFromPoint(ev.clientX, ev.clientY);
+		this.eventHandlers.mouseup(ev);
+	}.bind(this);
+	
+	this.eventHandlers.touchmove = function touchmove (event) {
+		var ev = event.changedTouches[0];
+		ev.preventDefault = function () {};
+		if (this.eventHandlers.mousemove(ev)) {
+			event.preventDefault();
+		}
+	}.bind(this);;
 	
 	overlayDiv.addEventListener("mousedown", this.eventHandlers.mousedown);
 	document.addEventListener("mouseup", this.eventHandlers.mouseup);
 	document.addEventListener("mousemove", this.eventHandlers.mousemove);
+	overlayDiv.addEventListener("touchstart", this.eventHandlers.touchstart);
+	document.addEventListener("touchend", this.eventHandlers.touchend);
+	document.addEventListener("touchmove", this.eventHandlers.touchmove);
 
 	this.update = function () {
 		var updateTime = Date.now();
@@ -104,17 +142,17 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 
 	this.inputCoords = function inputCoords (node, input) {
 		var image = node.propertys.getImage(node);
-		var height = (image.height - node.propertys.inputs * 10) / (node.propertys.inputs + 1);
+		var height = (image.height - node.propertys.inputs * settings.connectionHeight) / (node.propertys.inputs + 1);
 		var x = node.x - 2,
-			y = node.y + height * (input + 1) + input * 10 + 5;
+			y = node.y + height * (input + 1) + input * settings.connectionHeight + settings.connectionHeight / 2;
 		return [x, y];
 	};
 
 	this.outputCoords = function outputCoords (node, output) {
 		var image = node.propertys.getImage(node);
-		var height = (image.height - node.propertys.outputs * 10) / (node.propertys.outputs + 1);
+		var height = (image.height - node.propertys.outputs * settings.connectionHeight) / (node.propertys.outputs + 1);
 		var x = node.x + image.width + 2,
-			y = node.y + height * (output + 1) + output * 10 + 5;
+			y = node.y + height * (output + 1) + output * settings.connectionHeight + settings.connectionHeight / 2;
 		return [x, y];
 	};
 
@@ -173,15 +211,15 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 		image.className = "draw_node position_node";
 		image.id = node.id + "_image";
 		
-		var height = (image.height - node.propertys.inputs * 10) / (node.propertys.inputs + 1);
+		var height = (image.height - node.propertys.inputs * settings.connectionHeight) / (node.propertys.inputs + 1);
 		for (var i = 0; i < node.propertys.inputs; i++) {
 			var input = document.createElement("div");
 			input.className = "draw_connect_div";
 			input.style.position = "absolute";
-			input.style.height = "10px";
+			input.style.height = settings.connectionHeight + "px";
 			input.style.width = settings.connectionWidth + "px";
 			input.style.left = -settings.connectionWidth + "px";
-			input.style.top = height * (i + 1) + i * 10 + "px";
+			input.style.top = height * (i + 1) + i * settings.connectionHeight + "px";
 			input.node = node;
 			input.connectingInput = i;
 			input.addEventListener("click", function (number, event) {
@@ -190,15 +228,15 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 			div.appendChild(input);
 		}
 		
-		var height = (image.height - node.propertys.outputs * 10) / (node.propertys.outputs + 1);
+		var height = (image.height - node.propertys.outputs * settings.connectionHeight) / (node.propertys.outputs + 1);
 		for (var i = 0; i < node.propertys.outputs; i++) {
 			var input = document.createElement("div");
 			input.className = "draw_connect_div";
 			input.style.position = "absolute";
-			input.style.height = "10px";
+			input.style.height = settings.connectionHeight + "px";
 			input.style.width = settings.connectionWidth + "px";
 			input.style.left = image.width + 2 + "px";
-			input.style.top = height * (i + 1) + i * 10 + "px";
+			input.style.top = height * (i + 1) + i * settings.connectionHeight + "px";
 			input.node = node;
 			input.connectingOutput = i;
 			input.addEventListener("click", function (number, event) {
@@ -280,13 +318,19 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 	};
 	
 	this.addModule = function (json) {
-		setTimeout(function () {document.addEventListener("click", this.addModuleClickListener)}.bind(this), 4);
+		setTimeout(function () {
+			document.addEventListener("click", this.addModuleClickListener);
+			document.addEventListener("touchstart", this.addModuleClickListener);
+		}.bind(this), 4);
 		document.addingModule = json;
 		document.addingModuleTime = Date.now();
 		document.getElementById("clickHelp").style.display = "block";
 	};
 	
 	this.addModuleClickListener = function clicklistener (event) {
+		if (event.changedTouches) {
+			event = event.changedTouches[0];
+		}
 		if (Date.now() - document.addingModuleTime < 5) {
 			return;
 		}

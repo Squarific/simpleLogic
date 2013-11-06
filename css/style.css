@@ -18,7 +18,7 @@ body {
 	margin-top:5px;
 }
 .module:hover {
-	background:rgb(73, 72, 38);
+	background:rgb(116, 114, 49);
 }
 .modules_reload_button {
 	margin:10px;
@@ -55,8 +55,15 @@ body {
 }
 .menusection {
 	margin-top:4px;
+	color:rgb(61, 46, 15);
+}
+.menusection_text {
+	padding:5px;
 }
 .topBar {
+	position:fixed;
+	left:0;
+	top:0;
 	background:rgb(165, 163, 109);
 	height:50px;
 	text-align:center;

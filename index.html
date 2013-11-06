@@ -5,6 +5,7 @@
 		<link rel="stylesheet" href="css/style.css">
 		<link href='http://fonts.googleapis.com/css?family=Coda+Caption:800' rel='stylesheet' type='text/css'>
 
+		<script src="js/polyfill.js"></script>
 		<script src="js/modules.js"></script>
 		<script src="js/menu.js"></script>
 		<script src="js/utils.js"></script>
@@ -22,7 +23,7 @@
 	<body>
 		<div class="topBar">
 			<div class="topBarButton" onclick="document.getElementById('modules').style.display = 'block';">
-				Modules
+				Modules (Click here to share your creations with the rest of the world or see those of others).
 			</div>
 			<div id="clickHelp">
 				Click where you want to add the module
@@ -56,10 +57,15 @@
 				<div id="SQUARERGBLIGHT" class="node"></div>
 				<div id="DIGITDISPLAY" class="node"></div>
 			</div>
-			<div class="menusection" style="color:black;">
-				<div class="section">Donate</div>
-				If you want to throw bitcoins to me feel free<br/>
-				1GTq2EtKs6qKQWQXD2S8UHfpgvptSXoNo7
+			<div class="menusection">
+				<div class="section">INFO</div>
+				<div class="menusection_text">
+				To remove something, drag it outside the gray area.<br/>
+				To connect two nodes, click on a gray block and hold + drag to another gray block. (Only inputs with outputs).<br/>
+				To remove a connection, click on the gray block once.<br/><br/>
+				Source code: https://github.com/Squarific/simpleLogic/<br/><br/>
+				Feel free to throw me some coins 1GTq2EtKs6qKQWQXD2S8UHfpgvptSXoNo7 :D - Questions? <a href="mailto:alemaaltevinden@gmail.com">alemaaltevinden@gmail.com</a>
+				</div>
 			</div>
 		</div>
 		<div class="drawContainer">
@@ -82,5 +88,15 @@
 			</div>
 			<div class="modules_reload_button" onclick="uploadmodule()">Upload</div>
 		</div>
+		<script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+		  ga('create', 'UA-30802449-2', 'squarific.com');
+		  ga('send', 'pageview');
+
+		</script>
 	</body>
 </html>

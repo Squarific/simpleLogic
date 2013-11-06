@@ -1,12 +1,17 @@
+var menuloaded = false;
 function loadMenu (target) {
 	var items = document.getElementsByClassName("node");
+	if (menuloaded) {
+		return;
+	}
+	menuloaded = true;
 	for (var k = 0; k < items.length; k++) {
 		if (items[k].id) {
 			var item = new SQUARIFIC.simpleLogic.Node({type: items[k].id});
 			var image = item.propertys.getImage(item);
 			image.className = "draw_node";
 			items[k].appendChild(image);
-			image.addEventListener("mousedown", function (target, event) {			
+			var mousedown = function mousedown (target, event) {		
 				var x = event.clientX - Math.floor(target.overlayDiv.getBoundingClientRect().left) - (event.clientX - Math.floor(event.target.getBoundingClientRect().left)),
 				y = event.clientY - Math.floor(target.overlayDiv.getBoundingClientRect().top) - (event.clientY - Math.floor(event.target.getBoundingClientRect().top));
 				x = Math.round(x / 10) * 10;
@@ -22,7 +27,13 @@ function loadMenu (target) {
 				image.draggingStartY = event.clientY - Math.floor(event.target.getBoundingClientRect().top);
 				
 				event.preventDefault();
-			}.bind(items[k].id, target));
+			}.bind(items[k].id, target);
+			image.addEventListener("mousedown", mousedown);
+			image.addEventListener("touchstart", function (cb, event) {
+				var ev = event.changedTouches[0];
+				ev.preventDefault = function () {};
+				cb(ev);
+			}.bind(this, mousedown));
 		}
 	}
 }

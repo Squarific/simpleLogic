@@ -28,6 +28,7 @@ function reloadmodules () {
 					while (modules.firstChild) {
 						modules.removeChild(modules.firstChild);
 					}
+					modules.appendChild(document.createTextNode("Click on the module to add it to your current workfield. These modules are made by other people, you can share your own too!"));
 					for (var k = 0; k < mods.length; k++) {
 						modules.appendChild(domFromMod(mods[k]));
 					}
