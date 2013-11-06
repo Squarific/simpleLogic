@@ -1,6 +1,6 @@
 simpleLogic
 ===========
-DEMO: http://www.squarific.com/simpleLogic
+DEMO: http://www.squarific.com/simplelogic
 
 Node defenitions
 ================
