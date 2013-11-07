@@ -337,5 +337,25 @@ SQUARIFIC.simpleLogic.nodes = {
 			}
 			return node.image;
 		}
+	},
+	TFF: {
+		inputs: 2,
+		outputs: 2,
+		defaultOutputs: [false, true],
+		update: (function () {
+			var c = false;
+			return function (node, inputs, time) {
+				c = !c && node.inputs[1];
+				if (c && node.inputs[1] && node.inputs[0]) {
+					node.outputs[1] = !(node.outputs[0] = !node.outputs[0]);
+				}
+			};
+		})(),
+		getImage: function (node) {
+			if (!node.image) {
+				node.image = SQUARIFIC.simpleLogic.port.getImage("T FLIP-FLOP");
+			}
+			return node.image;
+		}
 	}
 };
