@@ -337,5 +337,45 @@ SQUARIFIC.simpleLogic.nodes = {
 			}
 			return node.image;
 		}
+	},
+	SRFF: {
+		inputs: 3,
+		outputs: 2,
+		defaultOutputs: [false, true],
+		update: (function () {
+			var c = false;
+			return function (node, inputs, time) {
+				if (!c && node.inputs[2] && node.inputs[0] != node.inputs[1]) {
+	    				node.outputs[1] = !(node.outputs[0] = node.inputs[0]);
+				}
+				c = node.inputs[2];
+			};
+		})(),
+		getImage: function (node) {
+			if (!node.image) {
+				node.image = SQUARIFIC.simpleLogic.port.getImage("SR FLIP-FLOP");
+			}
+			return node.image;
+		}
+	},
+	TFF: {
+		inputs: 2,
+		outputs: 2,
+		defaultOutputs: [false, true],
+		update: (function () {
+			var c = false;
+			return function (node, inputs, time) {
+				if (!c && node.inputs[1] && node.inputs[0]) {
+	    				node.outputs[1] = !(node.outputs[0] = !node.outputs[0]);
+				}
+				c = node.inputs[1];
+			};
+		})(),
+		getImage: function (node) {
+			if (!node.image) {
+				node.image = SQUARIFIC.simpleLogic.port.getImage("T FLIP-FLOP");
+			}
+			return node.image;
+		}
 	}
 };
