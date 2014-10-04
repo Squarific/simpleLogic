@@ -30,6 +30,7 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 			event.preventDefault();
 		} else if (event.target.node && (typeof event.target.node.propertys.mousedown !== "function" || !event.target.node.propertys.mousedown(event))) {
 			this.draggingNode = event.target;
+			document.getElementById("menu").style.opacity = "0.3";
 			event.target.draggingStartX = event.clientX - Math.floor(event.target.getBoundingClientRect().left);
 			event.target.draggingStartY = event.clientY - Math.floor(event.target.getBoundingClientRect().top);
 			event.preventDefault();
@@ -50,6 +51,7 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 		} else if (this.draggingNode && (this.draggingNode.node.x < 0 || this.draggingNode.node.y < 0)) {
 			this.removeNode(this.draggingNode.node);
 		}
+		document.getElementById("menu").style.opacity = "";
 		delete this.draggingNode;
 		delete this.connecting;
 	}.bind(this);
