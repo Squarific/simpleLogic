@@ -25,6 +25,7 @@ function loadMenu (target) {
 				target.draggingNode = image;
 				image.draggingStartX = event.clientX - Math.floor(event.target.getBoundingClientRect().left);
 				image.draggingStartY = event.clientY - Math.floor(event.target.getBoundingClientRect().top);
+				image.dragStartTime = Date.now();
 
 				document.getElementById("menu").style.opacity = "0.3";
 				

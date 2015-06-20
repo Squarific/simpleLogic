@@ -1,0 +1,8 @@
+CREATE TABLE modulelist (
+	id UNSIGNED INT AUTO_INCREMENT,
+	name_maker TEXT,
+	name TEXT,
+	description TEXT,
+	module TEXT,
+	PRIMARY KEY(id)
+);

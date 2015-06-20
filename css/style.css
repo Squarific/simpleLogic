@@ -2,8 +2,7 @@ body {
 	position:relative;
 	margin:0;
 	padding:0;
-	width:100%;
-	height:100%;
+	padding-top:50px;
 	background:rgb(94, 92, 92);
 	font-family: 'Coda Caption', sans-serif;
 	color:white;
@@ -84,6 +83,34 @@ body {
 	z-index:100;
 }
 
+.mainmessage {
+	position: fixed;
+	height:50px;
+	overflow:hidden;
+	left:0;
+	right:0;
+	margin-top: -50px;
+	background: black;
+	line-height: 50px;
+	vertical-align: middle;
+	padding-left:50px;
+	background: rgb(116, 31, 31);
+}
+
+.mainmessage a {
+	display: inline-block;
+	background: rgb(172, 90, 90);
+	line-height: 30px;
+	padding: 10px;
+	float: right;
+	color: white;
+	text-decoration: none;
+}
+
+.mainmessage a:hover {
+	background:rgb(141, 73, 73);
+}
+
 .menusection {
 	margin-top:4px;
 	color:rgb(61, 46, 15);
@@ -110,7 +137,7 @@ body {
 
 .menu {
 	position:fixed;
-	top:0;
+	top:50px;
 	left:0;
 	bottom:0;
 	width:20%;

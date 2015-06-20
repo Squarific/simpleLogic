@@ -28,16 +28,24 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 		} else if(typeof event.target.connectingOutput === "number") {
 			this.connecting = {node: event.target.node, output: event.target.connectingOutput};
 			event.preventDefault();
-		} else if (event.target.node && (typeof event.target.node.propertys.mousedown !== "function" || !event.target.node.propertys.mousedown(event))) {
+		} else if (!this.draggingNode && event.target.node && (typeof event.target.node.propertys.mousedown !== "function" || !event.target.node.propertys.mousedown(event))) {
 			this.draggingNode = event.target;
 			document.getElementById("menu").style.opacity = "0.3";
 			event.target.draggingStartX = event.clientX - Math.floor(event.target.getBoundingClientRect().left);
 			event.target.draggingStartY = event.clientY - Math.floor(event.target.getBoundingClientRect().top);
+			event.target.dragStartTime = Date.now();
 			event.preventDefault();
+		} else {
+			this.backStartX = event.clientX;
+			this.backStartY = event.clientY;
+			this.dragBackground = true;
+			document.body.style.cursor = "move";
 		}
 	}.bind(this);
 	
 	this.eventHandlers.mouseup = function mouseup (event) {
+		var currentX = -parseInt(overlayDiv.style.left.slice(0, -2)) + 20 || 0,
+		    currentY = -parseInt(overlayDiv.style.top.slice(0, -2)) + 20  || 0;
 		if (this.connecting) {
 			if (typeof this.connecting.input === "number") {
 				if (typeof event.target.connectingOutput === "number") {
@@ -48,11 +56,19 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 					event.target.node.addInput(this.connecting.node, this.connecting.output, event.target.connectingInput);
 				}
 			}
-		} else if (this.draggingNode && (this.draggingNode.node.x < 0 || this.draggingNode.node.y < 0)) {
+		} else if (this.draggingNode && (this.draggingNode.node.x < currentX || this.draggingNode.node.y < currentY)) {
 			this.removeNode(this.draggingNode.node);
+			delete this.draggingNode;
+			document.getElementById("menu").style.opacity = "";
 		}
-		document.getElementById("menu").style.opacity = "";
-		delete this.draggingNode;
+		
+		// Only stop dragging if we have been dragging for more than half a second
+		if (this.draggingNode && Date.now() - this.draggingNode.dragStartTime > 200) {
+			delete this.draggingNode;
+			document.getElementById("menu").style.opacity = "";
+		}
+		this.dragBackground = false;
+		document.body.style.cursor = "";
 		delete this.connecting;
 	}.bind(this);
 	
@@ -68,9 +84,22 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 			event.preventDefault();
 			returntrue = true;
 		}
-		if (this.connecting) {
-			returntrue = true;
+
+		if (this.connecting) returntrue = true;
+
+		if (this.dragBackground && !this.draggingNode) {
+			var currentX = parseInt(overlayDiv.style.left.slice(0, -2)) || 0,
+			    currentY = parseInt(overlayDiv.style.top.slice(0, -2))  || 0;
+
+			overlayDiv.style.left = currentX + (event.clientX - this.backStartX) + "px";
+			overlayDiv.style.top  = currentY + (event.clientY - this.backStartY) + "px";
+
+			this.backStartX = event.clientX;
+			this.backStartY = event.clientY;
+			
+			event.preventDefault();
 		}
+
 		this.mouseX = event.clientX - Math.floor(overlayDiv.getBoundingClientRect().left);
 		this.mouseY = event.clientY - Math.floor(overlayDiv.getBoundingClientRect().top);
 		return returntrue;
@@ -100,10 +129,10 @@ SQUARIFIC.simpleLogic.SimpleLogic = function SimpleLogic (canvas, overlayDiv) {
 		}
 	}.bind(this);;
 	
-	overlayDiv.addEventListener("mousedown", this.eventHandlers.mousedown);
+	document.addEventListener("mousedown", this.eventHandlers.mousedown);
 	document.addEventListener("mouseup", this.eventHandlers.mouseup);
 	document.addEventListener("mousemove", this.eventHandlers.mousemove);
-	overlayDiv.addEventListener("touchstart", this.eventHandlers.touchstart);
+	document.addEventListener("touchstart", this.eventHandlers.touchstart);
 	document.addEventListener("touchend", this.eventHandlers.touchend);
 	document.addEventListener("touchmove", this.eventHandlers.touchmove);
 
